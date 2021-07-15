@@ -1,4 +1,8 @@
-//
-// Created by linux on 15/07/2021.
-//
+#include <iostream>
 
+int main(int argc, char **argv)
+{
+    std::cout << "Hello world !\n";
+
+    return 0;
+}
