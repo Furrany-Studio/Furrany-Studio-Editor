@@ -2,23 +2,31 @@
 
 int main(int nCmdShow)
 {
-    WNDCLASSEX windowClass = {sizeof(WNDCLASSEX)};
+    WNDCLASSEX windowClass;
 
     windowClass.lpszClassName = "mainWindow";
-    windowClass.style = CS_OWNDC;
+    windowClass.lpszMenuName = "Furrany Studio";
+    windowClass.style = NULL;
     windowClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
+    windowClass.cbSize = sizeof(WNDCLASSEX);
+    windowClass.cbClsExtra = NULL;
+    windowClass.cbWndExtra = NULL;
+    windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    windowClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+    windowClass.hInstance = NULL;
 
     RegisterClassEx(&windowClass);
 
-    HWND windowsHandle = CreateWindowEx(
-            0,
-            windowClass.lpszClassName,
+    HWND windowsHandle =::CreateWindowEx(
+            WS_EX_OVERLAPPEDWINDOW,
+            "mainWindow",
             "Furrany Studio",
             WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+            CW_USEDEFAULT, CW_USEDEFAULT, 500, 500,
             NULL,
             NULL,
-            windowClass.hInstance,
+            NULL,
             NULL
             );
 
