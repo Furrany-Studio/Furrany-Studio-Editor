@@ -3,6 +3,8 @@
 // Include the Windows header
 #include <windows.h>
 
+#include <lmcons.h>
+
 // Prototype of the Window Procedure function
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -69,9 +71,28 @@ int main(int argc, char **argv)
 // Window Procedure function
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    char str[300];
+    TCHAR compName[UNCLEN+1];
+    DWORD  compName_len=UNCLEN+1;
+
     // Check Window Messages
     switch(uMsg)
     {
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            sprintf(str, "Hello and Welcome to Furrany Studio Editor.");
+            TextOut(hdc, 10, 10, str, strlen(str));
+
+            GetComputerName((TCHAR*) compName, &compName_len);
+            TextOut(hdc, 10, 50, "Welcome User : ", strlen("Welcome User : "));
+            TextOut(hdc, 120, 50, compName, strlen(compName));
+
+            break;
+        }
+
         // Window was exited
         case WM_DESTROY:
         {
