@@ -1,40 +1,59 @@
+#include <iostream>
 #include <windows.h>
 
-int main(int nCmdShow)
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+int main(int argc, char **argv)
 {
-    WNDCLASSEX windowClass;
+    WNDCLASS wc = { };
 
-    windowClass.lpszClassName = "mainWindow";
-    windowClass.lpszMenuName = "Furrany Studio";
-    windowClass.style = NULL;
-    windowClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-    windowClass.cbSize = sizeof(WNDCLASSEX);
-    windowClass.cbClsExtra = NULL;
-    windowClass.cbWndExtra = NULL;
-    windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    windowClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-    windowClass.hInstance = NULL;
+    wc.lpfnWndProc   = WindowProc;
+    wc.hInstance     = GetModuleHandleA(NULL);
+    wc.lpszClassName = "mainWindow";
 
-    RegisterClassEx(&windowClass);
+    RegisterClassA(&wc);
 
-    HWND windowsHandle =::CreateWindowEx(
-            WS_EX_OVERLAPPEDWINDOW,
-            "mainWindow",
+    HWND windowsHandle = CreateWindowExA(
+            CS_OWNDC,
+            wc.lpszClassName,
             "Furrany Studio",
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT, 500, 500,
             NULL,
             NULL,
-            NULL,
+            GetModuleHandleA(NULL),
             NULL
             );
 
     if(windowsHandle == NULL)
     {
-        return 0;
+        return 1;
+    }
+    
+    ShowWindow(windowsHandle, argc);
+    
+    std::cout << "Hello, world!" << std::endl;
+
+    MSG messages = { };
+    while(GetMessageA(&messages, NULL, 0, 0))
+    {
+        TranslateMessage(&messages);
+        DispatchMessageA(&messages);
     }
 
-    ShowWindow(windowsHandle, nCmdShow);
+    return 0;
+}
 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch(uMsg)
+    {
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            break;
+        }
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
