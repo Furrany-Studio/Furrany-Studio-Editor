@@ -1,107 +1,27 @@
-// Include Input Output Stream
 #include <iostream>
-// Include the Windows header
-#include <windows.h>
+#include <SDL2/SDL.h>
 
-#include <lmcons.h>
-
-// Prototype of the Window Procedure function
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-// Main function
 int main(int argc, char **argv)
 {
-    // Window class
-    WNDCLASS wc = { };
-
-    // Window Procedure Function to call
-    wc.lpfnWndProc   = WindowProc;
-    // Window Instance
-    wc.hInstance     = GetModuleHandleA(NULL); // Get the module handle of the executable
-    // Window Class Name
-    wc.lpszClassName = "mainWindow";
-
-    // Register the window class
-    RegisterClassA(&wc);
-
-    // Create the window
-    HWND windowsHandle = CreateWindowExA(
-            CS_OWNDC,
-            wc.lpszClassName,
-            "Furrany Studio",
-            WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, CW_USEDEFAULT, 500, 500,
-            NULL,
-            NULL,
-            GetModuleHandleA(NULL),
-            NULL
-            );
-
-    // Check if the Window was created
-    if(windowsHandle == NULL)
-    {
-        // Return 1 if the window was not created
-        return 1;
+    SDL_Init(SDL_INIT_EVERYTHING);
+    
+    SDL_Window *window = SDL_CreateWindow("Furrany Studio", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, SDL_WINDOW_RESIZABLE);
+    
+    SDL_Event event;
+    
+    std::cout << "Hello World !\n";
+    
+    while (1) {
+        SDL_PollEvent(&event);
+        
+        if (event.type == SDL_QUIT) {
+            break;
+        }
     }
     
-    // Show the window
-    ShowWindow(windowsHandle, argc);
+    SDL_DestroyWindow(window);
     
-    // DEBUG
-    //TODO: Remove this
-    std::cout << "Hello, world!" << std::endl;
+    SDL_Quit();
 
-    // Window Message variable
-    MSG messages = { };
-
-    // Loop until the window is closed A.k.A. GameLoop
-    //TODO: Make a true GameLoop
-    while(GetMessageA(&messages, NULL, 0, 0))
-    {
-        // Translate the message
-        TranslateMessage(&messages);
-        // Dispatch the message
-        DispatchMessageA(&messages);
-    }
-
-    // Return 0 if the window was closed
     return 0;
-}
-
-// Window Procedure function
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    char str[300];
-    TCHAR compName[UNCLEN+1];
-    DWORD  compName_len=UNCLEN+1;
-
-    // Check Window Messages
-    switch(uMsg)
-    {
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-
-            sprintf(str, "Hello and Welcome to Furrany Studio Editor.");
-            TextOut(hdc, 10, 10, str, strlen(str));
-
-            GetComputerName((TCHAR*) compName, &compName_len);
-            TextOut(hdc, 10, 50, "Welcome User : ", strlen("Welcome User : "));
-            TextOut(hdc, 120, 50, compName, strlen(compName));
-
-            break;
-        }
-
-        // Window was exited
-        case WM_DESTROY:
-        {
-            // Destroy the window
-            PostQuitMessage(0);
-            break;
-        }
-    }
-
-    // Return Default Window Procedure if no message was found
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
