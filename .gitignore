@@ -2,4 +2,8 @@
 /[Bb][In][Nn]/
 /.idea/
 /cmake-build-debug/
+/cmake-build-release/
 /.vscode/
+
+# macOS cache
+.DS_Store
