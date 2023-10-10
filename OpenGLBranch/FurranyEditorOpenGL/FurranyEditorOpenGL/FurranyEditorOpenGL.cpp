@@ -112,9 +112,15 @@ int main() {
     }
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,  // Sommet 1
-         0.5f, -0.5f, 0.0f,  // Sommet 2
-         0.0f,  0.5f, 0.0f   // Sommet 3
+        -0.5f, -0.5f, 0.0f,  // Coin inférieur gauche
+         0.5f, -0.5f, 0.0f,  // Coin inférieur droit
+         0.5f,  0.5f, 0.0f,  // Coin supérieur droit
+        -0.5f,  0.5f, 0.0f   // Coin supérieur gauche
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2,  // Triangle 1
+        0, 2, 3   // Triangle 2
     };
 
     unsigned int VBO;
@@ -139,6 +145,11 @@ int main() {
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Désactive le curseur
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
@@ -149,11 +160,11 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Utilise les indices
 
         // Configurer la matrice de vue
         glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
