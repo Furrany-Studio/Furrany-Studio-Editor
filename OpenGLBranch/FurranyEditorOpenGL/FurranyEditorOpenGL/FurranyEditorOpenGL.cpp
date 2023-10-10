@@ -154,7 +154,9 @@ int main() {
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
+    // https://plib.sourceforge.net/whats_inside.html
 
+    // Boucle principale
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         glClear(GL_COLOR_BUFFER_BIT);
