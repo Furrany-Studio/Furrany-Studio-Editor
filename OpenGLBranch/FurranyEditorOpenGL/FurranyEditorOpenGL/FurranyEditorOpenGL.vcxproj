@@ -115,7 +115,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)/FurranyEditorOpenGL/dependencies/include</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)/FurranyEditorOpenGL/dependencies/lib/glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)/FurranyEditorOpenGL/dependencies/lib/glfw3.lib;$(SolutionDir)/FurranyEditorOpenGL/dependencies/lib/glew32.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -160,6 +160,7 @@
     <ClCompile Include="FurranyEditorOpenGL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dependencies\lib\glew32.lib" />
     <Content Include="dependencies\lib\glfw3.lib" />
     <Content Include="Shaders\fragment_shader.glsl" />
     <Content Include="Shaders\vertex_shader.glsl" />
@@ -167,6 +168,10 @@
   <ItemGroup>
     <ClInclude Include="dependencies\include\GLFW\glfw3.h" />
     <ClInclude Include="dependencies\include\GLFW\glfw3native.h" />
+    <ClInclude Include="dependencies\include\GL\eglew.h" />
+    <ClInclude Include="dependencies\include\GL\glew.h" />
+    <ClInclude Include="dependencies\include\GL\glxew.h" />
+    <ClInclude Include="dependencies\include\GL\wglew.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
