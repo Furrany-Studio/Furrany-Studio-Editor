@@ -1,5 +1,10 @@
 #include "dependencies/include/GL/glew.h"
 #include "dependencies/include/GLFW/glfw3.h"
+#include "dependencies/include/glm/glm.hpp"
+#include "dependencies/include/glm/gtc/matrix_transform.hpp"
+#include <iostream>
+
+using namespace std;
 
 const char* vertexShaderSource = R"(
     #version 330 core
@@ -17,13 +22,43 @@ const char* fragmentShaderSource = R"(
     }
 )";
 
+float cameraSpeed = 0.05f; // Vitesse de la caméra
+
+glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        cameraPosition += cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        cameraPosition -= cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        cameraPosition += cameraSpeed * cameraUp;
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        cameraPosition -= cameraSpeed * cameraUp;
+    }
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
 int main() {
     if (!glfwInit()) {
         return -1;
     }
 
     // Crée la fenêtre GLFW
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Test Triangle", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Triangle OpenGL", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -63,7 +98,10 @@ int main() {
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Désactive le curseur
+
     while (!glfwWindowShouldClose(window)) {
+        processInput(window);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -72,6 +110,11 @@ int main() {
         glEnableVertexAttribArray(0);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        // Configurer la matrice de vue
+        glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+
+        cout << "Camera position: " << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
