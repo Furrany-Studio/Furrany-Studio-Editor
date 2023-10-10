@@ -161,6 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dependencies\lib\glfw3.lib" />
+    <Content Include="Shaders\fragment_shader.glsl" />
+    <Content Include="Shaders\vertex_shader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\GLFW\glfw3.h" />
