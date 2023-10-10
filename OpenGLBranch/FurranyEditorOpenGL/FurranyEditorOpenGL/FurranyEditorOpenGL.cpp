@@ -23,10 +23,14 @@ const char* fragmentShaderSource = R"(
 )";
 
 float cameraSpeed = 0.05f; // Vitesse de la caméra
+bool rightMousePressed = false; // Bouton droit de la souris enfoncé
+double lastMouseX, lastMouseY; // Dernière position de la souris
 
-glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f); // Position de la caméra
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f); // Direction de la caméra
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); // Vecteur up de la caméra
+float cameraYaw = -90.0f; // Yaw de la caméra
+float cameraPitch = 0.0f; // Pitch de la caméra
 
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -49,6 +53,43 @@ void processInput(GLFWwindow* window) {
     }
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (rightMousePressed) {
+        double xOffset = xpos - lastMouseX;
+        double yOffset = lastMouseY - ypos;
+        
+        const float sensitivity = 0.05f;
+        xOffset *= sensitivity;
+        yOffset *= sensitivity;
+
+        cameraYaw += xOffset;
+        cameraPitch += yOffset;
+
+        if (cameraPitch > 89.0f) {
+            cameraPitch = 89.0f;
+        }
+        if (cameraPitch < -89.0f) {
+            cameraPitch = -89.0f;
+        }
+
+        // Réinitialise la position de la souris
+        lastMouseX = xpos;
+        lastMouseY = ypos;
+    }
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        if (action == GLFW_PRESS) {
+            rightMousePressed = true;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        } else if (action == GLFW_RELEASE) {
+            rightMousePressed = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
     }
 }
 
@@ -98,7 +139,10 @@ int main() {
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Désactive le curseur
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Désactive le curseur
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -114,7 +158,11 @@ int main() {
         // Configurer la matrice de vue
         glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 
-        cout << "Camera position: " << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << endl;
+        //cout << "Camera position: " << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << endl;
+        //cout << "Camera front: " << cameraFront.x << ", " << cameraFront.y << ", " << cameraFront.z << endl;
+        //cout << "Camera up: " << cameraUp.x << ", " << cameraUp.y << ", " << cameraUp.z << endl;
+        //cout << "Camera yaw: " << cameraYaw << endl;
+        //cout << "Camera pitch: " << cameraPitch << endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
